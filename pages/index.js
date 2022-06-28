@@ -1,5 +1,11 @@
-import { useState } from "react";
+import { useStarknet, useStarknetInvoke } from '@starknet-react/core'
+import { useCallback, useState } from "react";
 import { Button, Container, Form, Row, Col, InputGroup, Spinner } from "react-bootstrap";
+import { toast } from 'react-toastify';
+import { toBN } from 'starknet/dist/utils/number';
+import { encodeShortString } from 'starknet/dist/utils/shortString';
+
+import { useCoopFactoryContract } from '../hooks/blockcoop.ts';
 
 const CreateCoop = () => {
   const [name, setName] = useState("");
@@ -13,9 +19,35 @@ const CreateCoop = () => {
   const [membershipFee, setMembershipFee] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreateCoop = () => {
-    
-  }
+  const { account } = useStarknet()
+  const { contract } = useCoopFactoryContract()
+  const { loading, error, reset, invoke } = useStarknetInvoke({ contract, method: 'create_coop' })
+
+  const handleCreateCoop = useCallback(() => {
+    reset()
+    if(account) {
+      if(name === '' || name === '0x' || symbol === '' || symbol === '0x' ) {
+        toast.error("Please enter name and symbol for your BlockCOOP", {
+          position: toast.POSITION.BOTTOM_CENTER
+        })
+        return;
+      }
+
+      try {
+        invoke({
+          args: [name, symbol, 100000, quorum, supermajority],
+          metadata: { method: 'create_coop', message: 'create new blockcoop' },
+        })  
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      toast.error("Please connect wallet", {
+        position: toast.POSITION.BOTTOM_CENTER
+      })
+    }
+
+  }, [account, name, symbol, quorum, supermajority, invoke, reset])
 
   return (
     <Container className="main-content">
@@ -27,10 +59,11 @@ const CreateCoop = () => {
               <Form.Control
                 type="text"
                 placeholder="Enter Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                // value={name}
+                onChange={(e) => setName(encodeShortString(e.target.value))}
               />
             </Form.Group>
+            {name}
           </Col>
           <Col sm="4">
             <Form.Group controlId="symbol" className="mb-3">
@@ -38,10 +71,11 @@ const CreateCoop = () => {
               <Form.Control
                 type="text"
                 placeholder="Enter Symbol"
-                value={symbol}
-                onChange={(e) => setSymbol(e.target.value)}
+                // value={symbol}
+                onChange={(e) => setSymbol(encodeShortString(e.target.value))}
               />
             </Form.Group>
+            {symbol}
           </Col>
         </Row>
         <Row className="mb-3">
@@ -51,7 +85,7 @@ const CreateCoop = () => {
               <InputGroup className="mb-3">
                 <Form.Select
                   value={votingPeriod}
-                  onChange={(e) => setVotingPeriod(e.target.value)}
+                  onChange={(e) => setVotingPeriod(toBN(e.target.value))}
                 >
                   {Array.from(Array(31).keys())
                     .slice(1)
@@ -63,7 +97,7 @@ const CreateCoop = () => {
                 </Form.Select>
                 <Form.Select
                   value={votingPeriodDuration}
-                  onChange={(e) => setVotingPeriodDuration(e.target.value)}
+                  onChange={(e) => setVotingPeriodDuration(toBN(e.target.value))}
                 >
                   <option value={3600}>Hours</option>
                   <option value={86400}>Days</option>
@@ -77,7 +111,7 @@ const CreateCoop = () => {
               <InputGroup className="mb-3">
                 <Form.Select
                   value={gracePeriod}
-                  onChange={(e) => setGracePeriod(e.target.value)}
+                  onChange={(e) => setGracePeriod(toBN(e.target.value))}
                 >
                   {Array.from(Array(31).keys())
                     .slice(1)
@@ -89,7 +123,7 @@ const CreateCoop = () => {
                 </Form.Select>
                 <Form.Select
                   value={gracePeriodDuration}
-                  onChange={(e) => setGracePeriodDuration(e.target.value)}
+                  onChange={(e) => setGracePeriodDuration(toBN(e.target.value))}
                 >
                   <option value={3600}>Hours</option>
                   <option value={86400}>Days</option>
@@ -105,7 +139,7 @@ const CreateCoop = () => {
               <InputGroup className="mb-3">
                 <Form.Select
                   value={quorum}
-                  onChange={(e) => setQuorum(e.target.value)}
+                  onChange={(e) => setQuorum(toBN(e.target.value))}
                 >
                   {Array.from(Array(11).keys())
                     .slice(1)
@@ -125,7 +159,7 @@ const CreateCoop = () => {
               <InputGroup className="mb-3">
                 <Form.Select
                   value={supermajority}
-                  onChange={(e) => setSupermajority(e.target.value)}
+                  onChange={(e) => setSupermajority(toBN(e.target.value))}
                 >
                   {Array.from(Array(11).keys())
                     .slice(1)
@@ -149,7 +183,7 @@ const CreateCoop = () => {
                   min={0}
                   placeholder="Fee"
                   value={membershipFee}
-                  onChange={(e) => setMembershipFee(e.target.value)}
+                  onChange={(e) => setMembershipFee(toBN(e.target.value))}
                 />
                 <InputGroup.Text>ETH</InputGroup.Text>
               </InputGroup>
@@ -157,7 +191,7 @@ const CreateCoop = () => {
           </Col>
         </Row>
         <div className="text-center mt-5">
-          {isCreating ? (
+          {loading ? (
             <Button size="lg" disabled>
               Creating a COOP &nbsp; <Spinner animation="border" size="sm" />
             </Button>
@@ -167,6 +201,7 @@ const CreateCoop = () => {
             </Button>
           )}
         </div>
+        {error && <p>Error: {error}</p>}
       </Form>
     </Container>
   );

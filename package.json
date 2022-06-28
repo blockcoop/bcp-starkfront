@@ -18,7 +18,7 @@
     "react-icons": "^4.4.0",
     "react-toastify": "^9.0.3",
     "sass": "^1.52.2",
-    "starknet": "^2.5.1"
+    "starknet": "^3.9.0"
   },
   "devDependencies": {
     "eslint": "8.17.0",

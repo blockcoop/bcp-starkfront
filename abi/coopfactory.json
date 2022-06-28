@@ -1,0 +1,68 @@
+[
+    {
+        "inputs": [
+            {
+                "name": "coop_class_hash_",
+                "type": "felt"
+            }
+        ],
+        "name": "constructor",
+        "outputs": [],
+        "type": "constructor"
+    },
+    {
+        "inputs": [],
+        "name": "coop_size",
+        "outputs": [
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "get_coops",
+        "outputs": [
+            {
+                "name": "array_len",
+                "type": "felt"
+            },
+            {
+                "name": "array",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "name",
+                "type": "felt"
+            },
+            {
+                "name": "symbol",
+                "type": "felt"
+            },
+            {
+                "name": "initial_mint",
+                "type": "felt"
+            },
+            {
+                "name": "quorum",
+                "type": "felt"
+            },
+            {
+                "name": "supermajority",
+                "type": "felt"
+            }
+        ],
+        "name": "create_coop",
+        "outputs": [],
+        "type": "function"
+    }
+]

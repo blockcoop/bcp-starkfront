@@ -22,7 +22,7 @@ a {
     box-sizing: border-box;
 }
 
-.navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .nav-link.active {
+.navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .nav-link.active, a:hover {
     color: $primary;
 }
 
@@ -71,4 +71,14 @@ select option:checked {
 select option:hover {
     background-color: $primary !important;
     color: white!important;
+}
+
+.list-details {
+    max-width: 500px;
+    li {
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+    }
 }

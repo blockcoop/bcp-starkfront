@@ -24,6 +24,12 @@ const Header = (props) => {
                     <Link href="/portfolio">
                         <a className={router.pathname == "/portfolio" ? "nav-link active" : "nav-link"}>Portfolio</a>
                     </Link>
+                    <Link href="/balance">
+                        <a className={router.pathname == "/balance" ? "nav-link active" : "nav-link"}>Balance</a>
+                    </Link>
+                    <Link href="/children">
+                        <a className={router.pathname == "/children" ? "nav-link active" : "nav-link"}>Children</a>
+                    </Link>
                 </Nav>
                 <Nav id="nav-wallet">
                     <Wallet />
