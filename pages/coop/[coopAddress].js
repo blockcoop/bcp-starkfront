@@ -51,7 +51,7 @@ const Coop = () => {
         
     }, [data, loading, error])
 
-    return <Container className="main-content">
+    return <Container className="main-content pb-5">
         {
             coop ?
             <>
